@@ -2,7 +2,7 @@
 
 from flask import Flask, redirect
 import requests
-import subprocess
+import socket
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
@@ -183,13 +183,31 @@ def voldown():
 
 @app.route("/on/")
 def on():
-    subprocess.call(["echo -e -n 'a\x0da\x0dPOWR1   \x0d' | socat - tcp4:192.168.0.206:10002"], shell=True)
+
+    host, port = '192.168.0.206', 10002
+    data = 'user\x0dpass\x0dPOWR1   \x0d'
+    encdata = data.encode()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    sock.connect((host, port))
+    sock.sendall(encdata)
+    sock.close()
+
     return redirect("http://{}".format(hostname), code=302)
 
 
 @app.route("/off/")
 def off():
-    subprocess.call(["echo -e -n 'a\x0da\x0dPOWR0   \x0d' | socat - tcp4:192.168.0.206:10002"], shell=True)
+
+    host, port = '192.168.0.206', 10002
+    data = 'user\x0dpass\x0dPOWR0   \x0d'
+    encdata = data.encode()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    sock.connect((host, port))
+    sock.sendall(encdata)
+    sock.close()
+
     return redirect("http://{}".format(hostname), code=302)
 
 
