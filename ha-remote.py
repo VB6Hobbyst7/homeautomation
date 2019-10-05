@@ -213,19 +213,37 @@ def off():
 
 @app.route("/av1/")
 def av1():
-    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Input><Input_Sel>AV1</Input_Sel></Input></Main_Zone></YAMAHA_AV>")
+    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
+                                                                                  "<Main_Zone>"
+                                                                                  "<Input>"
+                                                                                  "<Input_Sel>AV1</Input_Sel>"
+                                                                                  "</Input>"
+                                                                                  "</Main_Zone>"
+                                                                                  "</YAMAHA_AV>")
     return redirect("http://{}".format(hostname), code=302)
 
 
 @app.route("/av2/")
 def av2():
-    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Input><Input_Sel>AV2</Input_Sel></Input></Main_Zone></YAMAHA_AV>")
+    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
+                                                                                  "<Main_Zone>"
+                                                                                  "<Input>"
+                                                                                  "<Input_Sel>AV2</Input_Sel>"
+                                                                                  "</Input>"
+                                                                                  "</Main_Zone>"
+                                                                                  "</YAMAHA_AV>")
     return redirect("http://{}".format(hostname), code=302)
 
 
 @app.route("/audio1/")
 def audio1():
-    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\"><Main_Zone><Input><Input_Sel>AUDIO1</Input_Sel></Input></Main_Zone></YAMAHA_AV>")
+    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
+                                                                                  "<Main_Zone>"
+                                                                                  "<Input>"
+                                                                                  "<Input_Sel>AUDIO1</Input_Sel>"
+                                                                                  "</Input>"
+                                                                                  "</Main_Zone>"
+                                                                                  "</YAMAHA_AV>")
     return redirect("http://{}".format(hostname), code=302)
 
 
