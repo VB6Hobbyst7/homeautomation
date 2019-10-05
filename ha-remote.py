@@ -181,36 +181,6 @@ def voldown():
     return redirect("http://{}".format(hostname), code=302)
 
 
-@app.route("/on/")
-def on():
-
-    host, port = '192.168.0.206', 10002
-    data = 'user\x0dpass\x0dPOWR1   \x0d'
-    encdata = data.encode()
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    sock.connect((host, port))
-    sock.sendall(encdata)
-    sock.close()
-
-    return redirect("http://{}".format(hostname), code=302)
-
-
-@app.route("/off/")
-def off():
-
-    host, port = '192.168.0.206', 10002
-    data = 'user\x0dpass\x0dPOWR0   \x0d'
-    encdata = data.encode()
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    sock.connect((host, port))
-    sock.sendall(encdata)
-    sock.close()
-
-    return redirect("http://{}".format(hostname), code=302)
-
-
 @app.route("/av1/")
 def av1():
     requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
@@ -245,6 +215,37 @@ def audio1():
                                                                                   "</Main_Zone>"
                                                                                   "</YAMAHA_AV>")
     return redirect("http://{}".format(hostname), code=302)
+
+
+@app.route("/on/")
+def on():
+
+    host, port = '192.168.0.206', 10002
+    data = 'user\x0dpass\x0dPOWR1   \x0d'
+    encdata = data.encode()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    sock.connect((host, port))
+    sock.sendall(encdata)
+    sock.close()
+
+    return redirect("http://{}".format(hostname), code=302)
+
+
+@app.route("/off/")
+def off():
+
+    host, port = '192.168.0.206', 10002
+    data = 'user\x0dpass\x0dPOWR0   \x0d'
+    encdata = data.encode()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    sock.connect((host, port))
+    sock.sendall(encdata)
+    sock.close()
+
+    return redirect("http://{}".format(hostname), code=302)
+
 
 
 if __name__ == "__main__":
