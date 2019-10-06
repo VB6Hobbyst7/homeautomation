@@ -7,8 +7,11 @@ from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
+app_host = "mbx.bevilacqua.us:8080"
+roku_host = "roku.bevilacqua.us"
+yamaha_host = "yamaha.bevilacqua.us"
+sharp_host = "192.168.0.206"
 
-hostname = "mbx.bevilacqua.us:8080"
 t = "&nbsp&nbsp&nbsp&nbsp"
 
 
@@ -24,7 +27,7 @@ def index():
              <font color="white" size="5">
              <big><big><big>
              <b>{}</b><br><br>
-             """.format(hostname, hostname)
+             """.format(app_host, app_host)
 
     body = """
            <a style="color:green" href="/on/">on</a>{}{}{}{}<a style="color:green" href="/off/">off</a><br><br>
@@ -63,189 +66,193 @@ def default_page():
 
 @app.route("/back/")
 def back():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/back")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/back".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/home/")
 def home():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/home")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/home".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/up/")
 def up():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/up")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/up".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/left/")
 def left():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/left")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/left".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/sel/")
 def sel():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/select")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/select".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/right/")
 def right():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/right")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/right".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/down/")
 def down():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/down")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/down".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/info/")
 def info():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/info")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/info".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/fwd/")
 def fwd():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/fwd")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/fwd".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/rev/")
 def rev():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/rev")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/rev".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/play/")
 def play():
-    requests.request("POST", "http://192.168.0.198:8060/keypress/play")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}:8060/keypress/play".format(roku_host))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/volup/")
 def volup():
-    r = requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"GET\">"
-                                                                                      "<Main_Zone>"
-                                                                                      "<Volume>"
-                                                                                      "<Lvl>GetParam</Lvl>"
-                                                                                      "</Volume>"
-                                                                                      "</Main_Zone>"
-                                                                                      "</YAMAHA_AV>")
+    r = requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                         data="<YAMAHA_AV cmd=\"GET\">"
+                              "<Main_Zone>"
+                              "<Volume>"
+                              "<Lvl>GetParam</Lvl>"
+                              "</Volume>"
+                              "</Main_Zone>"
+                              "</YAMAHA_AV>")
     soup = BeautifulSoup(r.content, 'lxml')
     current_volume = soup.find('val').text
     step = 10
     vol = int(current_volume) + int(step)
-    p = requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
-                                                                                      "<Main_Zone>"
-                                                                                      "<Volume>"
-                                                                                      "<Lvl>"
-                                                                                      "<Val>{}</Val>"
-                                                                                      "<Exp>1</Exp>"
-                                                                                      "<Unit>dB</Unit>"
-                                                                                      "</Lvl>"
-                                                                                      "</Volume>"
-                                                                                      "</Main_Zone>"
-                                                                                      "</YAMAHA_AV>".format(vol))
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                     data="<YAMAHA_AV cmd=\"PUT\">"
+                          "<Main_Zone>"
+                          "<Volume>"
+                          "<Lvl>"
+                          "<Val>{}</Val>"
+                          "<Exp>1</Exp>"
+                          "<Unit>dB</Unit>"
+                          "</Lvl>"
+                          "</Volume>"
+                          "</Main_Zone>"
+                          "</YAMAHA_AV>".format(vol))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/voldown/")
 def voldown():
-    r = requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"GET\">"
-                                                                                      "<Main_Zone>"
-                                                                                      "<Volume>"
-                                                                                      "<Lvl>GetParam</Lvl>"
-                                                                                      "</Volume>"
-                                                                                      "</Main_Zone>"
-                                                                                      "</YAMAHA_AV>")
+    r = requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                         data="<YAMAHA_AV cmd=\"GET\">"
+                              "<Main_Zone>"
+                              "<Volume>"
+                              "<Lvl>GetParam</Lvl>"
+                              "</Volume>"
+                              "</Main_Zone>"
+                              "</YAMAHA_AV>")
     soup = BeautifulSoup(r.content, 'lxml')
     current_volume = soup.find('val').text
     step = 10
     vol = int(current_volume) - int(step)
-    p = requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
-                                                                                      "<Main_Zone>"
-                                                                                      "<Volume>"
-                                                                                      "<Lvl>"
-                                                                                      "<Val>{}</Val>"
-                                                                                      "<Exp>1</Exp>"
-                                                                                      "<Unit>dB</Unit>"
-                                                                                      "</Lvl>"
-                                                                                      "</Volume>"
-                                                                                      "</Main_Zone>"
-                                                                                      "</YAMAHA_AV>".format(vol))
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                     data="<YAMAHA_AV cmd=\"PUT\">"
+                          "<Main_Zone>"
+                          "<Volume>"
+                          "<Lvl>"
+                          "<Val>{}</Val>"
+                          "<Exp>1</Exp>"
+                          "<Unit>dB</Unit>"
+                          "</Lvl>"
+                          "</Volume>"
+                          "</Main_Zone>"
+                          "</YAMAHA_AV>".format(vol))
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/av1/")
 def av1():
-    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
-                                                                                  "<Main_Zone>"
-                                                                                  "<Input>"
-                                                                                  "<Input_Sel>AV1</Input_Sel>"
-                                                                                  "</Input>"
-                                                                                  "</Main_Zone>"
-                                                                                  "</YAMAHA_AV>")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                     data="<YAMAHA_AV cmd=\"PUT\">"
+                          "<Main_Zone>"
+                          "<Input>"
+                          "<Input_Sel>AV1</Input_Sel>"
+                          "</Input>"
+                          "</Main_Zone>"
+                          "</YAMAHA_AV>")
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/av2/")
 def av2():
-    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
-                                                                                  "<Main_Zone>"
-                                                                                  "<Input>"
-                                                                                  "<Input_Sel>AV2</Input_Sel>"
-                                                                                  "</Input>"
-                                                                                  "</Main_Zone>"
-                                                                                  "</YAMAHA_AV>")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                     data="<YAMAHA_AV cmd=\"PUT\">"
+                          "<Main_Zone>"
+                          "<Input>"
+                          "<Input_Sel>AV2</Input_Sel>"
+                          "</Input>"
+                          "</Main_Zone>"
+                          "</YAMAHA_AV>")
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/audio1/")
 def audio1():
-    requests.request("POST", "http://192.168.0.40/YamahaRemoteControl/ctrl", data="<YAMAHA_AV cmd=\"PUT\">"
-                                                                                  "<Main_Zone>"
-                                                                                  "<Input>"
-                                                                                  "<Input_Sel>AUDIO1</Input_Sel>"
-                                                                                  "</Input>"
-                                                                                  "</Main_Zone>"
-                                                                                  "</YAMAHA_AV>")
-    return redirect("http://{}".format(hostname), code=302)
+    requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                     data="<YAMAHA_AV cmd=\"PUT\">"
+                          "<Main_Zone>"
+                          "<Input>"
+                          "<Input_Sel>AUDIO1</Input_Sel>"
+                          "</Input>"
+                          "</Main_Zone>"
+                          "</YAMAHA_AV>")
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/on/")
 def on():
 
-    host, port = '192.168.0.206', 10002
+    port = 10002
     data = 'user\x0dpass\x0dPOWR1   \x0d'
     encdata = data.encode()
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    sock.connect((host, port))
+    sock.connect((sharp_host, port))
     sock.sendall(encdata)
     sock.close()
-
-    return redirect("http://{}".format(hostname), code=302)
+    return redirect("http://{}".format(app_host), code=302)
 
 
 @app.route("/off/")
 def off():
 
-    host, port = '192.168.0.206', 10002
+    port = 10002
     data = 'user\x0dpass\x0dPOWR0   \x0d'
     encdata = data.encode()
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    sock.connect((host, port))
+    sock.connect((sharp_host, port))
     sock.sendall(encdata)
     sock.close()
-
-    return redirect("http://{}".format(hostname), code=302)
-
+    return redirect("http://{}".format(app_host), code=302)
 
 
 if __name__ == "__main__":
