@@ -31,7 +31,8 @@ def index():
 
     body = """
            <a style="color:green" href="/on/">on</a>{}{}{}{}<a style="color:green" href="/off/">off</a><br><br>
-           <a style="color:green" href="/volup/">volup</a>{}{}{}{}
+           <a style="color:green" href="/volup/">volup</a>{}{}
+           <a style="color:green" href="/mute/">mute</a>{}{}
            <a style="color:green" href="/voldown/">voldown</a><br><br>
            <a style="color:green" href="/av1/">av1</a>{}
            <a style="color:green" href="/av2/">av2</a>{}
@@ -185,6 +186,35 @@ def voldown():
                           "</Volume>"
                           "</Main_Zone>"
                           "</YAMAHA_AV>".format(vol))
+    return redirect("http://{}".format(app_host), code=302)
+
+
+@app.route("/mute/")
+def mute():
+    r = requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                         data="<YAMAHA_AV cmd=\"GET\">"
+                              "<Main_Zone>"
+                              "<Volume>"
+                              "<Mute>GetParam</Mute>"
+                              "</Volume>"
+                              "</Main_Zone>"
+                              "</YAMAHA_AV>")
+    soup = BeautifulSoup(r.content, 'lxml')
+    mute_state = soup.find('mute').text
+
+    if mute_state is 'Off':
+        mute_set = 'On'
+    else:
+        mute_set = 'Off'
+
+    requests.request("POST", "http://{}/YamahaRemoteControl/ctrl".format(yamaha_host),
+                     data="<YAMAHA_AV cmd=\"PUT\">"
+                          "<Main_Zone>"
+                          "<Volume>"
+                          "<Mute>{}</Mute>"
+                          "</Volume>"
+                          "</Main_Zone>"
+                          "</YAMAHA_AV>".format(mute_set))
     return redirect("http://{}".format(app_host), code=302)
 
 
