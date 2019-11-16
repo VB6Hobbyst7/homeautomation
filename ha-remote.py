@@ -202,7 +202,7 @@ def mute():
     soup = BeautifulSoup(r.content, 'lxml')
     mute_state = soup.find('mute').text
 
-    if mute_state is 'Off':
+    if mute_state in 'Off':
         mute_set = 'On'
     else:
         mute_set = 'Off'
